@@ -9,6 +9,26 @@ const Room = ({ roomName, token, handleLogout }) => {
     <p key={participant.sid}>participant.identity</p>
   ));
 
+  useEffect(() => {
+    const participantConnected = participant => {
+      setParticipants(prevParticipants => [...prevParticipants, participant]);
+    };
+    const participantDisconnected = participant => {
+      setParticipants(prevParticipants =>
+        prevParticipants.filter(p => p !== participant)
+      );
+    };
+
+    Video.connect(token, {
+      name: roomName
+    }).then(room => {
+      setRoom(room);
+      room.on('participantConnected', participantConnected);
+      room.on('participantDisconnected', participantDisconnected);
+      room.participants.forEach(participantConnected);
+    });
+  });
+
   return (
     <div className="room">
       <h2>Room: {roomName}</h2>
@@ -24,6 +44,6 @@ const Room = ({ roomName, token, handleLogout }) => {
       <div className="remote-participants">{remoteParticipants}</div>
     </div>
   );
-});
+};
 
 export default Room;
