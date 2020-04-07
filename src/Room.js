@@ -24,10 +24,20 @@ const Room = ({ roomName, token, handleLogout }) => {
     }).then(room => {
       setRoom(room);
       room.on('participantConnected', participantConnected);
-      room.on('participantDisconnected', participantDisconnected);
       room.participants.forEach(participantConnected);
     });
-  });
+
+    return () => {
+      setRoom(currentRoom => {
+        if (currentRoom && currentRoom.localParticipant.state === 'connected') {
+          currentRoom.disconnect();
+          return null;
+        } else {
+          return currentRoom;
+        }
+      });
+    };
+  }, [roomName, token]);
 
   return (
     <div className="room">
