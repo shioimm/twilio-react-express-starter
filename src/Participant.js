@@ -7,6 +7,36 @@ const Participant = ({ participant }) => {
   const videoRef = useRef();
   const audioRef = useRef();
 
+  useEffect(() => {
+    const trackSubscribed = track => {
+      if (track.kind === 'video') {
+        setVideoTracks(videoTracks => [...videoTracks, track]);
+      } else {
+        setAudioTracks(audioTracks => [...audioTracks, track]);
+      }
+    };
+
+    const trackUnsubscribed = track => {
+      if (track.kind === 'video') {
+        setVideoTracks(videoTracks => videoTracks.filter(v => v !== track));
+      } else {
+        setAudioTracks(audioTracks => audioTracks.filter(a => a !== track));
+      }
+    };
+
+    setVideoTracks(Array.from(participant.videoTracks.values()));
+    setAudioTracks(Array.from(participant.audioTracks.values()));
+
+    participant.on('trackSubscribed', trackSubscribed);
+    participant.on('trackUnsubscribed', trackUnsubscribed);
+
+    return () => {
+      setVideoTracks([]);
+      setAudioTracks([]);
+      participant.removeAllListeners();
+    };
+  }, [participant]);
+
   return (
     <div className="participant">
       <h3>{participant.identity}</h3>
