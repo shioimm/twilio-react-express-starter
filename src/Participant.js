@@ -7,7 +7,15 @@ const Participant = ({ participant }) => {
   const videoRef = useRef();
   const audioRef = useRef();
 
+  const trackpubsToTracks = (trackMap) =>
+    Array.from(trackMap.values())
+      .map((publication) => publication.track)
+      .filter((track) => track !== null)
+
   useEffect(() => {
+    setVideoTracks(trackpubsToTracks(participant.videoTracks))
+    setAudioTracks(trackpubsToTracks(participant.audioTracks))
+
     const trackSubscribed = track => {
       if (track.kind === 'video') {
         setVideoTracks(videoTracks => [...videoTracks, track]);
@@ -23,9 +31,6 @@ const Participant = ({ participant }) => {
         setAudioTracks(audioTracks => audioTracks.filter(a => a !== track));
       }
     };
-
-    setVideoTracks(Array.from(participant.videoTracks.values()));
-    setAudioTracks(Array.from(participant.audioTracks.values()));
 
     participant.on('trackSubscribed', trackSubscribed);
     participant.on('trackUnsubscribed', trackUnsubscribed);
