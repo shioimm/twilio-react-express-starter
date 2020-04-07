@@ -1,3 +1,8 @@
+Cloned from [philnash/react-express-starter](https://github.com/philnash/react-express-starter).  
+Implement referring to [React HooksによるTwilioビデオチャットの構築方法](https://cloudapi.kddi-web.com/dev/5496/).
+
+---
+
 # React application with Express server
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app). Then an Express server was added in the `server` directory. The server is proxied via the `proxy` key in `package.json`.
